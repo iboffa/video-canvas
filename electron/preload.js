@@ -1,4 +1,5 @@
 const { contextBridge, ipcRenderer } = require('electron');
+var global = global || window;
 
 contextBridge.exposeInMainWorld('record', {
   start: () => ipcRenderer.send('start-recording'),
