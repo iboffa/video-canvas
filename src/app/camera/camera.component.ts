@@ -7,7 +7,6 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { ChildProcess, spawn } from 'child_process';
 import { from, Observable } from 'rxjs';
 import { RecorderService } from '../services/recorder/recorder.service';
 
@@ -24,7 +23,6 @@ export default class CameraComponent implements OnInit, AfterViewInit {
 
   recording = false;
   camera$!: Observable<MediaStream>;
-  ffmpeg!: ChildProcess;
   mediaRecorder!: MediaRecorder;
 
   constructor(private zone: NgZone, private recorderService: RecorderService) {}
