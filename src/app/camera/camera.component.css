@@ -1,0 +1,17 @@
+video {
+  display: none;
+}
+
+canvas, button {
+  display: block;
+  margin: 2rem auto; /* centers the element horizontally */
+  text-align: center; /* centers the element vertically */
+}
+
+button {
+  background-color: red; /* button color */
+  color: white;
+  font-size: 20px;
+  border-radius: 1rem; /* rounded button */
+  padding: 1rem;
+}

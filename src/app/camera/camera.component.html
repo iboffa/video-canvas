@@ -1,0 +1,4 @@
+<video *ngIf="camera$ | async as stream" #videoElement width="640" height="480" [srcObject]="stream" autoplay
+  (play)="onPlay()"></video>
+<canvas #canvasElement width="640" height="480" id="root"></canvas>
+<button (click)="toggleRecording()">{{ recording ? 'Stop' : 'Start' }} Recording</button>

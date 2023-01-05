@@ -1,33 +1,81 @@
 import * as path from 'path';
 
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
+import * as ffmpeg from '@ffmpeg-installer/ffmpeg';
+import { ChildProcess, spawn } from 'child_process';
+import { formatDate } from './date_formatter';
+
+let ffmpegProcess: ChildProcess;
 
 function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 800,
-    height: 600,
+    height: 800,
     webPreferences: {
-      nodeIntegration: true,
+      preload: path.join(__dirname, './preload.js'),
     },
   });
 
   // Load the index.html of the app.
-  win.loadFile(path.join(__dirname, '../app/index.html'));
+  win.loadFile(path.join(__dirname, '../index.html'));
 }
 
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
+
 app.whenReady().then(createWindow);
-
-app.on('ready', createWindow);
-
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
-});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+ipcMain.on('start-recording', () => {
+  console.log('start recording');
+  const filename = formatDate(new Date());
+  ffmpegProcess = spawn(ffmpeg.path.replace('app.asar', 'app.asar.unpacked'), [
+    '-f',
+    'webm',
+    '-c:v',
+    'vp9',
+    '-i',
+    '-',
+    '-c:a',
+    'aac',
+    '-strict',
+    'experimental',
+    `${filename}.mp4`,
+  ]);
+
+  ffmpegProcess.on('finish', () => {
+    console.log('finish');
+    ffmpegProcess.kill('SIGINT');
+  });
+
+  ffmpegProcess.on('error', (error) => {
+    console.error(error);
+  });
+
+  ffmpegProcess.stdout?.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
+
+  ffmpegProcess.stderr?.on('data', (data) => {
+    console.error(`stderr: ${data}`);
+  });
+});
+
+ipcMain.on('stop-recording', () => {
+  console.log('stop recording');
+  if (!ffmpegProcess.killed) {
+    console.log('stdin end');
+    ffmpegProcess.stdin?.end();
+  }
+});
+
+ipcMain.on('video-chunk', (event, chunk: Uint8Array) => {
+  console.log('chunk received');
+  if (!ffmpegProcess.killed && !ffmpegProcess.stdin?.writableEnded)
+    ffmpegProcess.stdin?.write(Buffer.from(chunk));
 });
