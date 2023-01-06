@@ -88,7 +88,7 @@ ipcMain.on('stop-recording', () => {
   }
 });
 
-ipcMain.on('video-chunk', (event, chunk: Uint8Array) => {
+ipcMain.on('video-chunk', (event, chunk: ArrayBuffer) => {
   console.log('chunk received');
   if (!ffmpegProcess.killed && !ffmpegProcess.stdin?.writableEnded)
     ffmpegProcess.stdin?.write(Buffer.from(chunk));
