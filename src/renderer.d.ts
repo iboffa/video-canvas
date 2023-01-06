@@ -2,7 +2,7 @@ export {};
 
 interface RecordApi {
   start: () => void;
-  sendChunk: (chunk: Uint8Array) => void;
+  sendChunk: (chunk: ArrayBuffer) => void;
   stop: () => void;
 }
 

@@ -11,7 +11,7 @@ export class RecorderService {
   record(chunk: Blob): void {
     chunk
       .arrayBuffer()
-      .then((buffer) => window.record.sendChunk(Buffer.from(buffer)));
+      .then((buffer) => window.record.sendChunk(buffer));
   }
 
   stop(): void {
