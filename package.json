@@ -1,6 +1,7 @@
 {
   "name": "angular-template",
   "version": "0.0.0",
+  "main": "electron/main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

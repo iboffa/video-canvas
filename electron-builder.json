@@ -1,14 +1,14 @@
 {
   "asar": true,
-  "productName": "Angular Electron template",
-  "appId": "angular.electron.template",
+  "productName": "Video canvas",
+  "appId": "com.iboffa.video.canvas",
   "files": [
     "**/*",
     "!**/*.ts",
     "!*.map",
     "!package.json",
     "!package-lock.json",
-    "electron/main.js",
+    "!**/esbuild.exe",
     {
       "from": "./dist",
       "filter": ["**/*"]
